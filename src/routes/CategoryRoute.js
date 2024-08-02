@@ -1,6 +1,7 @@
 const express = require("express")
-const CategoryController = require("../controller/CategoryController")
 const { getCategoryValidator, createCategoryValidator, updateCategoryValidator, deletCategoryValidator } = require("../utils/validators/categoryValidator")
+const CategoryController = require("../controller/CategoryController")
+
 const router = express.Router()
 
 router.route("/")

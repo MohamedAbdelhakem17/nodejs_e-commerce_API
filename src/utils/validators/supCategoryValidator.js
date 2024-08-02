@@ -1,35 +1,41 @@
 const { check } = require("express-validator");
 const validatorMiddleware = require("../../middleware/validatorMiddleware")
 
-const getCategoryValidator = [
+const getSupcategoryValidator = [
     check("id")
         .isMongoId()
         .withMessage("This Is Not Valid Mongo Id"),
     validatorMiddleware
 ];
 
-const createCategoryValidator = [
+const createSupcategoryValidator = [
     check("name")
         .trim()
         .notEmpty().withMessage("You Must Insert Category Name")
         .isLength({ min: 3, max: 32 })
-        .withMessage('Category name must be between 3 and 32 characters long'),
+        .withMessage('Sup Category must be between 3 and 32 characters long'),
+    check("categoryId")
+        .isMongoId()
+        .withMessage("This Is Not Valid Mongo Id"),
     validatorMiddleware
 ];
 
-const updateCategoryValidator = [
+const updateSupcategoryValidator = [
     check("id")
         .isMongoId()
         .withMessage("This Is Not Valid Mongo Id"),
     check("name")
         .trim()
         .notEmpty().withMessage("You Must Insert Category Name")
-        .isLength({ min: 3, max: 32 })
-        .withMessage('Category name must be between 3 and 32 characters long'),
+        .isLength({ min: 3, max: 32 }),
+    check("categoryId")
+        .isMongoId()
+        .withMessage("This Is Not Valid Mongo Id")
+        .withMessage('Sup Category must be between 3 and 32 characters long'),
     validatorMiddleware
 ];
 
-const deletCategoryValidator = [
+const deletSupcategoryValidator = [
     check("id")
         .isMongoId()
         .withMessage("This Is Not Valid Mongo Id"),
@@ -39,5 +45,5 @@ const deletCategoryValidator = [
 
 
 module.exports = {
-    getCategoryValidator, createCategoryValidator, updateCategoryValidator, deletCategoryValidator
+    getSupcategoryValidator, createSupcategoryValidator, updateSupcategoryValidator, deletSupcategoryValidator
 }

@@ -2,14 +2,15 @@ require('dotenv').config()
 
 const express = require("express")
 const morgan = require('morgan')
-const dbConnection = require("./config/database.js")
-const globalErrorHandelr = require("./middleware/globalError.js")
-const AppError = require('./utils/customError.js')
+const dbConnection = require("./config/database")
+const globalErrorHandelr = require("./middleware/globalError")
+const AppError = require('./utils/customError')
 const httpStatus = require("./config/httpStatus")
 
 
-const { environment, serverPort } = require("./config/variable.js")
-const CategoryRoute = require("./routes/CategoryRoute.js")
+const { environment, serverPort } = require("./config/variable")
+const CategoryRoute = require("./routes/CategoryRoute")
+const supcategoryRoute = require("./routes/SupCategoryRoute")
 
 // Database Connection
 dbConnection()
@@ -28,9 +29,10 @@ if (environment === "development") {
 
 // Routes
 app.use("/api/v1/category", CategoryRoute)
+app.use("/api/v1/supcategory", supcategoryRoute)
 
 // Handel not found Route 
-app.use("*", (req, res, next) => {
+app.use("*", (req) => {
     throw new AppError(404, httpStatus.FAIL, `Not Found Route ${req.originalUrl}`)
 })
 

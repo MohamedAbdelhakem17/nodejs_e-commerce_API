@@ -29,7 +29,7 @@ const getCategory = asyncHandler(
     async (req, res) => {
         const { id } = req.params
         const data = await CategoryModel.findById(id, { __v: 0 })
-        if (!data) throw new AppErorr(404, httpStatus.FAIL, `No Category For This ${id}`)
+        if (!data) throw new AppErorr(404, httpStatus.FAIL, `No Category For This id ${id}`)
         res.status(200).json({ status: httpStatus.SUCCESS, data })
     }
 )
@@ -55,7 +55,7 @@ const updateCategory = asyncHandler(
         const { id } = req.params
         const { name } = req.body
         const data = await CategoryModel.findByIdAndUpdate(id, { name, slug: slugify(name) }, { new: true })
-        if (!data) throw new AppErorr(404, httpStatus.FAIL, `No Category For This ${id}`)
+        if (!data) throw new AppErorr(404, httpStatus.FAIL, `No Category For This id ${id}`)
         delete data.__v
         res.status(200).json({ status: httpStatus.SUCCESS, data })
     }
@@ -68,7 +68,7 @@ const deleteCategory = asyncHandler(
     async (req, res) => {
         const { id } = req.params
         const data = await CategoryModel.findByIdAndDelete({ _id: id })
-        if (!data) throw new AppErorr(404, httpStatus.FAIL, `No Category For This ${id}`)
+        if (!data) throw new AppErorr(404, httpStatus.FAIL, `No Category For This id ${id}`)
         res.status(200).json({ status: httpStatus.SUCCESS, data: null })
     }
 )

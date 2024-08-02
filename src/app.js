@@ -11,6 +11,7 @@ const httpStatus = require("./config/httpStatus")
 const { environment, serverPort } = require("./config/variable")
 const CategoryRoute = require("./routes/CategoryRoute")
 const supcategoryRoute = require("./routes/SupCategoryRoute")
+const BrandRoute = require("./routes/BrandRoute")
 
 // Database Connection
 dbConnection()
@@ -30,6 +31,7 @@ if (environment === "development") {
 // Routes
 app.use("/api/v1/category", CategoryRoute)
 app.use("/api/v1/supcategory", supcategoryRoute)
+app.use("/api/v1/brand", BrandRoute)
 
 // Handel not found Route 
 app.use("*", (req) => {

@@ -6,15 +6,16 @@ const httpStatus = require("../config/httpStatus")
 const AppErorr = require("../utils/customError")
 
 //  @desc   Create New Sup category
-//  @route  Get  api/v1/supcategory 
-//  @access public 
+//  @route  Get  api/v1/supcategory/:id
+//  @access public     
 const getSupCategorys = asyncHandler(
     async (req, res) => {
         // pagination
         const page = +req.query.page || 1
         const limit = +req.query.limit || 5
         const skip = (page - 1) * limit
-        const data = await SupCategoryModel.find({}, { __v: 0 })
+        const { id } = req.params
+        const data = await SupCategoryModel.find({ categoryId: id }, { __v: 0 })
             .skip(skip)
             .limit(limit)
         res.status(200).json({ status: httpStatus.SUCCESS, data })

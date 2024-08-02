@@ -1,6 +1,13 @@
 const { check } = require("express-validator");
 const validatorMiddleware = require("../../middleware/validatorMiddleware")
 
+const getSupcategoryValidators = [
+    check("id")
+        .isMongoId()
+        .withMessage("This Is Not Valid Mongo Id"),
+    validatorMiddleware
+];
+
 const getSupcategoryValidator = [
     check("id")
         .isMongoId()
@@ -45,5 +52,5 @@ const deletSupcategoryValidator = [
 
 
 module.exports = {
-    getSupcategoryValidator, createSupcategoryValidator, updateSupcategoryValidator, deletSupcategoryValidator
+    getSupcategoryValidators,  getSupcategoryValidator, createSupcategoryValidator, updateSupcategoryValidator, deletSupcategoryValidator
 }

@@ -3,8 +3,9 @@ const mongoose = require("mongoose");
 const supCategorySchema = new mongoose.Schema({
     name: {
         type: String,
+        trim: true, 
         required: [true, "You must insert Sup Category Name"],
-        minlength: [3, "Sup category name must be great than 3 char"],
+        minlength: [2, "Sup category name must be great than 2 char"],
         maxlength: [32, "Sup category name must be less than 32 char"],
         unique: [true, "Category must be unique"],
     },
@@ -13,10 +14,10 @@ const supCategorySchema = new mongoose.Schema({
         lowercase: true
     },
     image: String,
-    categoryId: {
-        type: mongoose.Schema.Types.ObjectId , 
-        ref: "Category", 
-        required:[true , "Must insert Category ID"]
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+        required: [true, "Must insert Category ID"]
     }
 }, { timestamps: true })
 

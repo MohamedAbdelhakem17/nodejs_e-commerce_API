@@ -3,6 +3,11 @@ const { getCategoryValidator, createCategoryValidator, updateCategoryValidator, 
 const CategoryController = require("../controller/CategoryController")
 
 const router = express.Router()
+// Nested Route 
+const subcategoriesRoute = require("./SupCategoryRoute")
+
+router.use('/:categoryId/supcategory', subcategoriesRoute);
+
 
 router.route("/")
     .get(CategoryController.getCategorys)
@@ -12,5 +17,6 @@ router.route("/:id")
     .get(getCategoryValidator, CategoryController.getCategory)
     .put(updateCategoryValidator, CategoryController.updateCategory)
     .delete(deletCategoryValidator, CategoryController.deleteCategory)
+
 
 module.exports = router

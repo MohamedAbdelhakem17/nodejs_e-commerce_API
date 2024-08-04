@@ -7,7 +7,7 @@ const CategorySchema = new mongoose.Schema({
         trim: true,
         required: [true, "You must insert a Brand name"],
         unique: [true, "Brand must be unique"],
-        minlength: [3, "Brand name must be more than 3 characters"],
+        minlength: [2, "Brand name must be more than 2 characters"],
         maxlength: [32, "Brand name must be less than 32 characters"]
     },
     slug: {

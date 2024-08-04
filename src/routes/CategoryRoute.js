@@ -4,9 +4,9 @@ const CategoryController = require("../controller/CategoryController")
 
 const router = express.Router()
 // Nested Route 
-const subcategoriesRoute = require("./SupCategoryRoute")
+const subcategoriesRoute = require("./SubCategoryRoute")
 
-router.use('/:categoryId/supcategory', subcategoriesRoute);
+router.use('/:categoryId/subcategories', subcategoriesRoute);
 
 
 router.route("/")

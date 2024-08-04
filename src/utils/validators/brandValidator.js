@@ -12,8 +12,8 @@ const createBrandValidator = [
     check("name")
         .trim()
         .notEmpty().withMessage("You Must Insert Brand Name")
-        .isLength({ min: 3, max: 32 })
-        .withMessage('Brand name must be between 3 and 32 characters long'),
+        .isLength({ min: 2, max: 32 })
+        .withMessage('Brand name must be between 2 and 32 characters long'),
     validatorMiddleware
 ];
 

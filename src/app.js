@@ -6,11 +6,11 @@ const dbConnection = require("./config/database")
 const globalErrorHandelr = require("./middleware/globalError")
 const AppError = require('./utils/customError')
 const httpStatus = require("./config/httpStatus")
-
-
 const { environment, serverPort } = require("./config/variable")
+
+// Routes Select
 const CategoryRoute = require("./routes/CategoryRoute")
-const supcategoryRoute = require("./routes/SupCategoryRoute")
+const SubcategoryRoute = require("./routes/SubCategoryRoute")
 const BrandRoute = require("./routes/BrandRoute")
 
 // Database Connection
@@ -30,7 +30,7 @@ if (environment === "development") {
 
 // Routes
 app.use("/api/v1/category", CategoryRoute)
-app.use("/api/v1/supcategory", supcategoryRoute)
+app.use("/api/v1/subcategory", SubcategoryRoute)
 app.use("/api/v1/brand", BrandRoute)
 
 // Handel not found Route 

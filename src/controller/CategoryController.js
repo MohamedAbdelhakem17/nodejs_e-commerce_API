@@ -40,7 +40,7 @@ const getCategory = asyncHandler(
 const createCategory = asyncHandler(
     async (req, res) => {
         const { name } = req.body
-        const categoryCreated = await CategoryModel.create({ name, slug: slugify(name), image: "" })
+        const categoryCreated = await CategoryModel.create({ name, slug: slugify(name)})
         const result = categoryCreated.toObject()
         delete result.__v;
         res.status(201).json({ status: httpStatus.SUCCESS, data: result })

@@ -40,7 +40,7 @@ const getBrand = asyncHandler(
 const createBrand = asyncHandler(
     async (req, res) => {
         const { name } = req.body
-        const brandCreate = await BrandModel.create({ name, slug: slugify(name), image: "" })
+        const brandCreate = await BrandModel.create({ name, slug: slugify(name)})
         const result = brandCreate.toObject()
         delete result.__v;
         res.status(201).json({ status: httpStatus.SUCCESS, data: result })

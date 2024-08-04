@@ -1,5 +1,6 @@
 const { check } = require("express-validator");
-const validatorMiddleware = require("../../middleware/validatorMiddleware")
+const validatorMiddleware = require("../../middleware/validatorMiddleware");
+const CategoryModel = require("../../models/CategoryModel");
 
 
 const getSubcategoryValidator = [
@@ -17,7 +18,11 @@ const createSubcategoryValidator = [
         .withMessage('Sub Category must be between 2 and 32 characters long'),
     check("category")
         .isMongoId()
-        .withMessage("This Is Not Valid Mongo Id"),
+        .withMessage("This Is Not Valid Mongo Id")
+        .custom(async value => {
+            const category = await CategoryModel.findById(value)
+            if (!category) throw new Error("Category does not exist");
+        }),
     validatorMiddleware
 ];
 

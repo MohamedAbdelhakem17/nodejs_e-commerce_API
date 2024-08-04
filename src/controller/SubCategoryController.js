@@ -15,7 +15,6 @@ const createFilterObj = (req, res, next) => {
         : {}
 
     req.filterObj = filterObject;
-    console.log("Filter", req.filterObj)
     next();
 };
 
@@ -31,6 +30,7 @@ const getSubCategorys = asyncHandler(
         const data = await SubCategoryModel.find(req.filterObj, { __v: 0 })
             .skip(skip)
             .limit(limit)
+            .populate({ path: "category", select: "name -_id" })
         res.status(200).json({ status: httpStatus.SUCCESS, data })
     }
 )
@@ -41,14 +41,11 @@ const getSubCategorys = asyncHandler(
 const getSubCategory = asyncHandler(
     async (req, res) => {
         const { id } = req.params
-        const data = await SubCategoryModel.findById(id, { __v: 0 })
-        console.log(data, id)
-        console.log("NNO")
+        const data = await SubCategoryModel.findById(id, { __v: 0 }).populate({ path: "category", select: "name -_id" })
         if (!data) throw new AppErorr(404, httpStatus.FAIL, `Not Found Sub Catrgory For This id ${id}`)
         res.status(200).json({ status: httpStatus.SUCCESS, data })
     }
 )
-
 
 // Post /api/v1/categories/:categoryId/subcategories
 const setCategoryIdToBody = (req, res, next) => {
@@ -74,9 +71,9 @@ const createSubCategory = asyncHandler(
 //  @access Private 
 const updateSubCategory = asyncHandler(
     async (req, res) => {
-        const { name } = req.body
+        const { name , category } = req.body
         const { id } = req.params
-        const data = await SubCategoryModel.findOneAndUpdate({ _id: id }, { name: name, slug: slugify(name) }, { new: true })
+        const data = await SubCategoryModel.findOneAndUpdate({ _id: id }, { name: name, slug: slugify(name) ,category }, { new: true })
         if (!data) throw new AppErorr(404, httpStatus.FAIL, `Not Found Sub Catrgory For This id ${id}`)
         delete data.__v
         res.status(201).json({ status: httpStatus.SUCCESS, data })

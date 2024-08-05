@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const express = require("express")
 const morgan = require('morgan')
+
 const dbConnection = require("./config/database")
 const globalErrorHandelr = require("./middleware/globalError")
 const AppError = require('./utils/customError')
@@ -12,6 +13,7 @@ const { environment, serverPort } = require("./config/variable")
 const CategoryRoute = require("./routes/CategoryRoute")
 const SubcategoryRoute = require("./routes/SubCategoryRoute")
 const BrandRoute = require("./routes/BrandRoute")
+const ProductRoute = require("./routes/ProductRoute")
 
 // Database Connection
 dbConnection()
@@ -32,6 +34,7 @@ if (environment === "development") {
 app.use("/api/v1/category", CategoryRoute)
 app.use("/api/v1/subcategory", SubcategoryRoute)
 app.use("/api/v1/brand", BrandRoute)
+app.use("/api/v1/product", ProductRoute)
 
 // Handel not found Route 
 app.use("*", (req) => {

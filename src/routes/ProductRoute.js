@@ -10,9 +10,9 @@ router.route("/")
     .post(ProductValidator.createProductValidator, ProductController.createNewProduct)
 
 router.route("/:id")
-    .get(ProductController.getProduct)
-    .put(ProductController.updateProduct)
-    .delete(ProductController.deleteProduct)
+    .get(ProductValidator.getProductValidator, ProductController.getProduct)
+    .put(ProductValidator.updateProductValidator, ProductController.updateProduct)
+    .delete(ProductValidator.deleteProductValidator, ProductController.deleteProduct)
 
 
 

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { connectionString } = require("./variable")
+
 const dbConnection = () => {
     mongoose
         .connect(connectionString)

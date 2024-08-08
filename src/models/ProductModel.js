@@ -1,73 +1,89 @@
 const mongoose = require("mongoose");
 
-const {ObjectId} = mongoose.Schema.Types;
+const { ObjectId } = mongoose.Schema.Types;
 
-const productSchema = new mongoose.Schema({
+const productSchema = new mongoose.Schema(
+  {
     title: {
-        type: String,
-        trim: true,
-        required: [true, "Must insert product title"],
-        minlength: [3, "Product title must be more than 3 char"],
-        maxlength: [100, "Product title must be less than 100 char"],
+      type: String,
+      trim: true,
+      required: [true, "Must insert product title"],
+      minlength: [3, "Product title must be more than 3 char"],
+      maxlength: [100, "Product title must be less than 100 char"],
     },
     slug: {
-        type: String,
-        required:true, 
-        lowercase: true
+      type: String,
+      required: true,
+      lowercase: true,
     },
     description: {
-        type: String,
-        required: [true, "Must insert product description"],
-        minlength: [20, "Product description must be more than 20 char"]
+      type: String,
+      required: [true, "Must insert product description"],
+      minlength: [20, "Product description must be more than 20 char"],
     },
     price: {
-        type: Number,
-        required: [true, "Must insert product price"],
-        max: [200000, "Over price limit"]
+      type: Number,
+      required: [true, "Must insert product price"],
+      max: [200000, "Over price limit"],
     },
     priceAfterDiscount: {
-        type: Number,
-        required: false
+      type: Number,
+      required: false,
     },
     colors: {
-        type: [String]
+      type: [String],
     },
     sold: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     imageCover: {
-        type: String,
-        required: [true, 'Product Image cover is required'],
+      type: String,
+      required: [true, "Product Image cover is required"],
     },
     images: {
-        type: [String]
+      type: [String],
     },
     category: {
-        type: ObjectId,
-        ref: "Category",
-        required: [true, "Must select product category"]
+      type: ObjectId,
+      ref: "Category",
+      required: [true, "Must select product category"],
     },
-    subCategorys: [
-        {
-            type: ObjectId,
-            ref: "Subcategory"
-        }
+    subcategories: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Subcategory",
+      },
     ],
+
     brand: {
-        type: ObjectId,
-        ref: "Brand"
+      type: ObjectId,
+      ref: "Brand",
     },
     ratingsAverage: {
-        type: Number,
-        min: [1, 'Rating must be above or equal 1.0'],
-        max: [5, 'Rating must be below or equal 5.0'],
+      type: Number,
+      min: [1, "Rating must be above or equal 1.0"],
+      max: [5, "Rating must be below or equal 5.0"],
     },
     ratingsQuantity: {
-        type: Number,
-        default: 0,
+      type: Number,
+      default: 0,
     },
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
+
+productSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "category",
+    select: "name -_id",
+  });
+  // this.populate({
+  //   path: "subcategories",
+  //   select: "name -_id -category",
+  // });
+  next();
+});
 
 const ProductModel = mongoose.model("Product", productSchema);
 

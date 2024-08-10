@@ -42,7 +42,6 @@ const createOne = (Model) =>
     } else {
       req.body.slug = slugify(req.body.name);
     }
-
     const newProduct = await Model.create(req.body);
     res.status(201).json({ status: httpStatus.SUCCESS, data: newProduct });
   });

@@ -15,6 +15,7 @@ const CategoryRoute = require("./routes/CategoryRoute");
 const SubcategoryRoute = require("./routes/SubCategoryRoute");
 const BrandRoute = require("./routes/BrandRoute");
 const ProductRoute = require("./routes/ProductRoute");
+const UserRoute = require("./routes/UserRoute");
 
 // Database Connection
 dbConnection();
@@ -37,6 +38,7 @@ app.use("/api/v1/category", CategoryRoute);
 app.use("/api/v1/subcategory", SubcategoryRoute);
 app.use("/api/v1/brand", BrandRoute);
 app.use("/api/v1/product", ProductRoute);
+app.use("/api/v1/users", UserRoute);
 
 // Handel not found Route
 app.use("*", (req) => {

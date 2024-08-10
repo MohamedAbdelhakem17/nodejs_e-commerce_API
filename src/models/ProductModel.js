@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { host } = require("../config/variable");
 
 const { ObjectId } = mongoose.Schema.Types;
 
@@ -73,16 +74,32 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const setImage = (doc) => {
+  if (doc.imageCover) {
+    const imageUrl = `${host}/products/${doc.imageCover}`;
+    doc.imageCover = imageUrl;
+  }
+
+  if (doc.images) {
+    doc.images = doc.images.map((image) => `${host}/products/${image}`);
+  }
+};
+
+
 productSchema.pre(/^find/, function (next) {
   this.populate({
     path: "category",
     select: "name -_id",
   });
-  // this.populate({
-  //   path: "subcategories",
-  //   select: "name -_id -category",
-  // });
   next();
+});
+
+productSchema.post("save", (doc) => {
+  setImage(doc);
+});
+
+productSchema.post("init", (doc) => {
+  setImage(doc);
 });
 
 const ProductModel = mongoose.model("Product", productSchema);

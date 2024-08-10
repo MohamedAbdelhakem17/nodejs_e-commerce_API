@@ -13,7 +13,7 @@
         "spaced-comment": "off",
         "no-console": "off",
         "consistent-return": "off",
-        "func-names": "warn",
+        "func-names": "off",
         "object-shorthand": "off",
         "no-process-exit": "off",
         "no-param-reassign": "off",

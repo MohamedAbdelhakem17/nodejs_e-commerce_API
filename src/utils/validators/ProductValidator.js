@@ -89,7 +89,7 @@ const createProductValidator = [
       ) {
         throw new Error(`Invalid subcategories Ids`);
       }
-      return true
+      return true;
     })
     // Check subcategory belongos to same category
     .custom(async (value, { req }) => {
@@ -113,6 +113,7 @@ const createProductValidator = [
       if (!brand) throw new Error(`No category for this id: ${value}`);
     }),
   check("ratingsAverage")
+    .optional()
     .isNumeric()
     .withMessage("Ratings average must be a number.")
     .custom((value) => {

@@ -25,6 +25,7 @@ const createSubcategoryValidator = [
     .custom(async (value) => {
       const category = await CategoryModel.findById(value);
       if (!category) throw new Error("Category does not exist");
+      else return true
     }),
   validatorMiddleware,
 ];

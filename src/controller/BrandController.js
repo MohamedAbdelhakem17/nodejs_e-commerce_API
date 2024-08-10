@@ -1,5 +1,22 @@
+const sharp = require("sharp");
+const { v4: uuidv4 } = require("uuid");
+
 const Factory = require("./handlersFactory");
+const { uploadSingleImage } = require("../middleware/imageUploadingMiddleware");
 const BrandModel = require("../models/BrandModel");
+
+// image Upload
+const imageBrandUpload = uploadSingleImage("image");
+const imageManipulation = async (req, res, next) => {
+  const filename = `brand-${uuidv4()}-${Date.now()}.jpeg`;
+  await sharp(req.file.buffer)
+    .resize(600, 600)
+    .toFormat("jpeg")
+    .jpeg({ quality: 95 })
+    .toFile(`uploads/brands/${filename}`);
+  req.body.image = filename;
+  next();
+};
 
 // @desc   Get List Of Brand
 // @route  GET  api/v1/brand
@@ -32,24 +49,6 @@ module.exports = {
   getBrand,
   updateBrand,
   deleteBrand,
+  imageBrandUpload, 
+  imageManipulation
 };
-
-// const createCategory = (req, res) => {
-//     const { name } = req.body
-//     let slug = name.includes(" ")
-//         ? name.trim.replaceAll(" ", "-").toLowerCase()
-//         : name.toLowerCase();
-
-//     CategoryModel.create({ name, slug, image: "" })
-//         .then(createdDocument => {
-//             const result = createdDocument.toObject();
-//             delete result.__v
-//             return result
-//         })
-//         .then(cat => {
-//             res.status(201).json({ status: "ok", data: cat })
-//         })
-//         .catch(err => {
-//             res.status(400).json({ status: "fail", data: err.message })
-//         })
-// }

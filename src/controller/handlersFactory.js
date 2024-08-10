@@ -37,7 +37,6 @@ const getOne = (Model) =>
 
 const createOne = (Model) =>
   asyncHandler(async (req, res) => {
-    console.log(Model);
     if (Model.modelName === "Product") {
       req.body.slug = slugify(req.body.title);
     } else {

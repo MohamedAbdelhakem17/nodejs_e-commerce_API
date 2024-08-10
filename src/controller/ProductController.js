@@ -1,5 +1,46 @@
-const ProductModel = require("../models/ProductModel");
+const sharp = require("sharp");
+const { v4: uuidv4 } = require("uuid");
+
+const { uploadMultiImages } = require("../middleware/imageUploadingMiddleware");
 const Factory = require("./handlersFactory");
+const ProductModel = require("../models/ProductModel");
+
+// Upload Product Image
+const productImagesUpload = uploadMultiImages([
+  { name: "imageCover", maxCount: 1 },
+  { name: "images", maxCount: 5 },
+]);
+const imageManipulation = async (req, res, next) => {
+  // image Cover
+  if (req.files.imageCover) {
+    const imageCoverFileName = `product-${uuidv4()}-${Date.now()}-cover.jpeg`;
+    await sharp(req.files.imageCover[0].buffer)
+      .resize(2000, 1333)
+      .toFormat("jpeg")
+      .jpeg({ quality: 95 })
+      .toFile(`uploads/products/${imageCoverFileName}`);
+    req.body.imageCover = imageCoverFileName;
+  }
+
+  // Product images
+  if (req.files.images) {
+    const listOfImages = [];
+    await Promise.all(
+      req.files.images.map(async (image, index) => {
+        const imageFileName = `product-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
+        await sharp(image.buffer)
+          .resize(2000, 1333)
+          .toFormat("jpeg")
+          .jpeg({ quality: 95 })
+          .toFile(`uploads/products/${imageFileName}`);
+        listOfImages.push(imageFileName);
+      })
+    );
+    req.body.images = listOfImages;
+  }
+
+  next();
+};
 
 // @desc    get All Product
 // @route   grt api/v1/product
@@ -32,4 +73,6 @@ module.exports = {
   createNewProduct,
   updateProduct,
   deleteProduct,
+  productImagesUpload,
+  imageManipulation,
 };

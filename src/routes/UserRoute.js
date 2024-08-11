@@ -1,4 +1,6 @@
 const express = require("express");
+
+const userValidator = require("../utils/validators/userValidator");
 const UserController = require("../controller/UserController");
 
 const router = express.Router();
@@ -22,4 +24,11 @@ router
   );
 
 router.put("/delete/:id", UserController.deleteUser);
+
+router.put(
+  "/changePassword/:id",
+  userValidator.changePasswordValidator,
+  UserController.changePassword
+);
+
 module.exports = router;

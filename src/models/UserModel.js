@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const asyncHandler = require("express-async-handler");
 
 const userRoles = require("../config/userRoles");
 const { host } = require("../config/variable");
@@ -44,24 +43,18 @@ const userSchema = new mongoose.Schema(
 );
 
 // hash Password
-userSchema.pre("save", async function (next) {
-  if (this.isModified("password") || this.isNew) {
-    const hashedPassword = await bcrypt.hash(this.password, 12);
-    this.password = hashedPassword;
-  }
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  // Hashing user password
+  this.password = await bcrypt.hash(this.password, 12);
   next();
 });
-
-// set image Url
-const setUserImage = (doc) => {
-  if (doc.imageProfail) {
+userSchema.post(["init", "save"], (doc) =>{
+   if (doc.imageProfail) {
     const newName = `${host}/users/${doc.imageProfail}`;
     doc.imageProfail = newName;
   }
-};
-
-userSchema.post("save", (doc) => setUserImage(doc));
-userSchema.post("init", (doc) => setUserImage(doc));
+});
 
 const UserModel = mongoose.model("User", userSchema);
 module.exports = UserModel;

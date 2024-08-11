@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const { v4: uuidv4 } = require("uuid");
 const sharp = require("sharp");
+const bcrypt = require("bcryptjs");
 
 const { uploadSingleImage } = require("../middleware/imageUploadingMiddleware");
 const Factory = require("./handlersFactory");
@@ -67,14 +68,30 @@ const updateUser = asyncHandler(async (req, res) => {
 const deleteUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const user = await UserModel.findOneAndUpdate(
-    { _id:id, active: 1 },
+    { _id: id, active: 1 },
     { $set: { active: 0 } },
     { new: true }
   );
-  console.log(id)
   if (!user)
     throw new AppErorr(404, httpStatus.FAIL, `No User For This id ${id}`);
   res.status(200).json({ status: httpStatus.SUCCESS, data: null });
+});
+
+//  @desc   Reset password  User
+//  @route  put   api/v1/user/changePassword/:id"
+//  @access private
+const changePassword = asyncHandler(async (req, res) => {
+  const { password } = req.body;
+  const { id } = req.params;
+  const user = await UserModel.findByIdAndUpdate(
+    id,
+    { $set: { password: await bcrypt.hash(password, 12) } },
+    { new: true }
+  );
+  if (!user) {
+    throw new AppErorr(404, httpStatus.FAIL, `No user found for this id ${id}`);
+  }
+  res.status(200).json({ status: httpStatus.SUCCESS, data: user });
 });
 
 module.exports = {
@@ -85,4 +102,5 @@ module.exports = {
   deleteUser,
   userImageUpload,
   imageManipulation,
+  changePassword,
 };

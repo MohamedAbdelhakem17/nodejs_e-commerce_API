@@ -45,10 +45,11 @@ const userSchema = new mongoose.Schema(
 // hash Password
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  // Hashing user password
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
+
+// set Image URL
 userSchema.post(["init", "save"], (doc) =>{
    if (doc.imageProfail) {
     const newName = `${host}/users/${doc.imageProfail}`;

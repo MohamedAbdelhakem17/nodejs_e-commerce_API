@@ -11,19 +11,25 @@ router
   .post(
     UserController.userImageUpload,
     UserController.imageManipulation,
+    userValidator.createUserValidator,
     UserController.createUser
   );
 
 router
   .route("/:id")
-  .get(UserController.getUser)
+  .get(userValidator.getUserValidator, UserController.getUser)
   .put(
     UserController.userImageUpload,
     UserController.imageManipulation,
+    userValidator.updateUserValidator,
     UserController.updateUser
   );
 
-router.put("/delete/:id", UserController.deleteUser);
+router.put(
+  "/delete/:id",
+  userValidator.deleteserValidator,
+  UserController.deleteUser
+);
 
 router.put(
   "/changePassword/:id",

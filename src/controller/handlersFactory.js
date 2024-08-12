@@ -1,5 +1,4 @@
 const asyncHandler = require("express-async-handler");
-const slugify = require("slugify");
 
 const httpStatus = require("../config/httpStatus");
 const AppErorr = require("../utils/customError");
@@ -37,11 +36,6 @@ const getOne = (Model) =>
 
 const createOne = (Model) =>
   asyncHandler(async (req, res) => {
-    if (Model.modelName === "Product") {
-      req.body.slug = slugify(req.body.title);
-    } else {
-      req.body.slug = slugify(req.body.name);
-    }
     const newProduct = await Model.create(req.body);
     res.status(201).json({ status: httpStatus.SUCCESS, data: newProduct });
   });

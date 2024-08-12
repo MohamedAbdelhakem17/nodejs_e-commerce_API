@@ -12,8 +12,8 @@ const UserModel = require("../models/UserModel");
 // handel image upload
 const userImageUpload = uploadSingleImage("imageProfail");
 const imageManipulation = async (req, res, next) => {
-  const filename = `user-${uuidv4()}-${Date.now()}.jpeg`;
   if (req.file) {
+    const filename = `user-${uuidv4()}-${Date.now()}.jpeg`;
     await sharp(req.file.buffer)
       .resize(600, 600)
       .toFormat("jpeg")
@@ -44,16 +44,16 @@ const createUser = Factory.createOne(UserModel);
 //  @access private
 const updateUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { name, imageProfail, phone, email, role } = req.body;
+  const { name, imageProfail, phone, email, role , slug } = req.body;
   const user = await UserModel.findByIdAndUpdate(
     id,
     {
       name,
       imageProfail,
       phone,
-      // slug,
       email,
       role,
+      slug
     },
     { new: true }
   );

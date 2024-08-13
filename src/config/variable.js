@@ -3,4 +3,5 @@ module.exports = {
   connectionString: process.env.DB_URI,
   serverPort: process.env.PORT,
   host: process.env.BASE_USRL,
+  tokenSecretKey: process.env.JWT_SECRET_KEY,
 };

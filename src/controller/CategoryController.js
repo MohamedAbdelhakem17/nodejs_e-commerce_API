@@ -8,13 +8,16 @@ const CategoryModel = require("../models/CategoryModel");
 // handel image upload
 const imageCategoryUpload = uploadSingleImage("image");
 const imageManipulation = async (req, res, next) => {
-  const filename = `category-${uuidv4()}-${Date.now()}.jpeg`;
-  await sharp(req.file.buffer)
-    .resize(600, 600)
-    .toFormat("jpeg")
-    .jpeg({ quality: 95 })
-    .toFile(`uploads/categories/${filename}`);
-  req.body.image = filename;
+  console.log(req.body)
+  if (req.file) {
+    const filename = `category-${uuidv4()}-${Date.now()}.jpeg`;
+    await sharp(req.file.buffer)
+      .resize(600, 600)
+      .toFormat("jpeg")
+      .jpeg({ quality: 95 })
+      .toFile(`uploads/categories/${filename}`);
+    req.body.image = filename;
+  }
   next();
 };
 

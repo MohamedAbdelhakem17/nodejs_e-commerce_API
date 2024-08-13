@@ -7,6 +7,7 @@ const {
   deletCategoryValidator,
 } = require("../utils/validators/categoryValidator");
 
+const AuthController = require("../controller/AuthController")
 const CategoryController = require("../controller/CategoryController");
 
 const router = express.Router();
@@ -20,6 +21,7 @@ router
   .route("/")
   .get(CategoryController.getCategorys)
   .post(
+    AuthController.protect,
     CategoryController.imageCategoryUpload,
     CategoryController.imageManipulation,
     createCategoryValidator,

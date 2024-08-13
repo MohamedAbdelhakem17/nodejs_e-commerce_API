@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema(
       required: [true, "You must insert User Password"],
       minlength: [6, "Password must be at least 6 characters long"],
     },
+    passwordChangedAt:Date , 
     active: {
       type: Boolean,
       default: true,
@@ -36,6 +37,7 @@ const userSchema = new mongoose.Schema(
       enum: [userRoles.ADMIN, userRoles.USER],
       default: userRoles.USER,
     },
+    token: String,
     imageProfail: String,
     phone: String,
   },
@@ -43,15 +45,15 @@ const userSchema = new mongoose.Schema(
 );
 
 // hash Password
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
 // set Image URL
-userSchema.post(["init", "save"], (doc) =>{
-   if (doc.imageProfail) {
+userSchema.post(["init", "save"], (doc) => {
+  if (doc.imageProfail) {
     const newName = `${host}/users/${doc.imageProfail}`;
     doc.imageProfail = newName;
   }

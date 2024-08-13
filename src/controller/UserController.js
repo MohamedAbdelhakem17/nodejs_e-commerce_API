@@ -44,7 +44,7 @@ const createUser = Factory.createOne(UserModel);
 //  @access private
 const updateUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { name, imageProfail, phone, email, role , slug } = req.body;
+  const { name, imageProfail, phone, email, role, slug } = req.body;
   const user = await UserModel.findByIdAndUpdate(
     id,
     {
@@ -53,7 +53,7 @@ const updateUser = asyncHandler(async (req, res) => {
       phone,
       email,
       role,
-      slug
+      slug,
     },
     { new: true }
   );
@@ -85,7 +85,12 @@ const changePassword = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const user = await UserModel.findByIdAndUpdate(
     id,
-    { $set: { password: await bcrypt.hash(password, 12) } },
+    {
+      $set: {
+        password: await bcrypt.hash(password, 12),
+        passwordChangedAt: Date.now(),
+      },
+    },
     { new: true }
   );
   if (!user) {

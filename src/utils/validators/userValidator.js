@@ -83,11 +83,18 @@ const changePasswordValidator = [
     .trim()
     .notEmpty()
     .withMessage("New password is required")
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/)
+    .withMessage(
+      "Your password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character."
+    )
     .custom(async (val, { req }) => {
       const { id } = req.params;
       const user = await UserModel.findById(id);
-
-      // 1. Check the old password is correct
+      // 1. chek if User exist
+      if (!user) {
+        throw new Error("This User Not Exist ");
+      }
+      // 2. Check the old password is correct
       const isCorrectPassword = await bcrypt.compare(
         req.body.currentPassword,
         user.password
@@ -96,7 +103,7 @@ const changePasswordValidator = [
         throw new Error(`The current password is not correct`);
       }
 
-      // 2. Check if new password matches confirmPassword
+      // 3. Check if new password matches confirmPassword
       const isSamePassword = String(val) === String(req.body.confirmPassword);
       if (!isSamePassword) {
         throw new Error(`New password and confirm password do not match`);

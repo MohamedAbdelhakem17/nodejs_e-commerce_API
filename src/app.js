@@ -16,6 +16,7 @@ const SubcategoryRoute = require("./routes/SubCategoryRoute");
 const BrandRoute = require("./routes/BrandRoute");
 const ProductRoute = require("./routes/ProductRoute");
 const UserRoute = require("./routes/UserRoute");
+const AuthRoute = require("./routes/AuthRoute");
 
 // Database Connection
 dbConnection();
@@ -25,8 +26,8 @@ const app = express();
 
 // middleware
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "../uploads")))
-
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "../uploads")));
 
 if (environment === "development") {
   app.use(morgan("dev"));
@@ -39,6 +40,7 @@ app.use("/api/v1/subcategory", SubcategoryRoute);
 app.use("/api/v1/brand", BrandRoute);
 app.use("/api/v1/product", ProductRoute);
 app.use("/api/v1/users", UserRoute);
+app.use("/api/v1/auth", AuthRoute);
 
 // Handel not found Route
 app.use("*", (req) => {

@@ -11,15 +11,15 @@ const globalErrorHandler = (error, req, res, next) => {
     error.statusCode = 401;
   }
 
-  res
-    .status(error.statusCode)
-    .json({ status: error.statusText, data: error.message });
+  // res
+  //   .status(error.statusCode)
+  //   .json({ status: error.statusText, data: error.message });
     
-  //   res.status(error.statusCode).json({
-  //     status: error.statusText,
-  //     data: error.message,
-  //     stack: error.stack,
-  //   });
+    res.status(error.statusCode).json({
+      status: error.statusText,
+      data: error.message,
+      stack: error.stack,
+    });
 };
 
 module.exports = globalErrorHandler;

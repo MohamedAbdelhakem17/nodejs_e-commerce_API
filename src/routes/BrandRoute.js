@@ -5,6 +5,11 @@ const {
   updateBrandValidator,
   deletBrandValidator,
 } = require("../utils/validators/brandValidator");
+
+const userRoles = require("../config/userRoles");
+const AuthController = require("../controller/AuthController");
+const allowTo = require("../middleware/allowTomiddleware.js");
+
 const BrandController = require("../controller/BrandController");
 
 const router = express.Router();
@@ -13,6 +18,8 @@ router
   .route("/")
   .get(BrandController.getBrands)
   .post(
+    AuthController.protect,
+    allowTo(userRoles.ADMIN, userRoles.MANGER),
     BrandController.imageBrandUpload,
     BrandController.imageManipulation,
     createBrandValidator,
@@ -23,11 +30,18 @@ router
   .route("/:id")
   .get(getBrandValidator, BrandController.getBrand)
   .put(
+    AuthController.protect,
+    allowTo(userRoles.ADMIN, userRoles.MANGER),
     BrandController.imageBrandUpload,
     BrandController.imageManipulation,
     updateBrandValidator,
     BrandController.updateBrand
   )
-  .delete(deletBrandValidator, BrandController.deleteBrand);
+  .delete(
+    AuthController.protect,
+    allowTo(userRoles.ADMIN),
+    deletBrandValidator,
+    BrandController.deleteBrand
+  );
 
 module.exports = router;

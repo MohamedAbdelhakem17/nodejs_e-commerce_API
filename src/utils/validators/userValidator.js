@@ -5,8 +5,24 @@ const bcrypt = require("bcryptjs");
 const validatorMiddleware = require("../../middleware/validatorMiddleware");
 const UserModel = require("../../models/UserModel");
 
-const createUserValidator = [
+const userValidator = (isUpdate) => [
+  check("id")
+    .if(() => isUpdate)
+    .trim()
+    .notEmpty()
+    .withMessage("User ID is required.")
+    .isMongoId()
+    .withMessage("This is not a valid ID.")
+    .custom(async (val, { req }) => {
+      const user = await UserModel.findById(val);
+      if (!user) {
+        throw new Error("User not found.");
+      }
+      return true;
+    }),
+    
   check("name")
+    .optional(isUpdate)
     .trim()
     .notEmpty()
     .withMessage("Name is required.")
@@ -18,6 +34,7 @@ const createUserValidator = [
     }),
 
   check("email")
+    .optional(isUpdate)
     .trim()
     .notEmpty()
     .withMessage("Email is required.")
@@ -32,6 +49,7 @@ const createUserValidator = [
     }),
 
   check("password")
+    .if(() => !isUpdate)
     .trim()
     .notEmpty()
     .withMessage("Password is required.")
@@ -49,6 +67,7 @@ const createUserValidator = [
     }),
 
   check("passwordConfirm")
+    .if(() => !isUpdate)
     .trim()
     .notEmpty()
     .withMessage("Password confirmation is required."),
@@ -120,7 +139,7 @@ const changePasswordValidator = [
   validatorMiddleware,
 ];
 
-const updateUserValidator = [
+const getUserValidator = [
   check("id")
     .trim()
     .notEmpty()
@@ -134,7 +153,52 @@ const updateUserValidator = [
       }
       return true;
     }),
+  validatorMiddleware,
+];
 
+const deleteserValidator = [
+  check("id")
+    .trim()
+    .notEmpty()
+    .withMessage("User ID is required.")
+    .isMongoId()
+    .withMessage("This is not a valid ID.")
+    .custom(async (val, { req }) => {
+      const user = await UserModel.findById(val);
+      if (!user) {
+        throw new Error("User not found.");
+      }
+      return true;
+    }),
+  validatorMiddleware,
+];
+
+const changeMyPasswordValidator = [
+  check("password")
+    .trim()
+    .notEmpty()
+    .withMessage("You Must insert New Password")
+    .custom((val, { req }) => {
+      const isSamePassword = String(val) === String(req.body.confirmPassword);
+      if (!isSamePassword) {
+        throw new Error(`New password and confirm password do not match`);
+      }
+      return true;
+    })
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/)
+    .withMessage(
+      "Your password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character."
+    ),
+
+  check("confirmPassword")
+    .trim()
+    .notEmpty()
+    .withMessage("Confirm password is required"),
+
+  validatorMiddleware,
+];
+
+const updataLoggedUserDataValidator = [
   check("name")
     .optional()
     .trim()
@@ -173,44 +237,12 @@ const updateUserValidator = [
   validatorMiddleware,
 ];
 
-const getUserValidator = [
-  check("id")
-    .trim()
-    .notEmpty()
-    .withMessage("User ID is required.")
-    .isMongoId()
-    .withMessage("This is not a valid ID.")
-    .custom(async (val, { req }) => {
-      const user = await UserModel.findById(val);
-      if (!user) {
-        throw new Error("User not found.");
-      }
-      return true;
-    }),
-  validatorMiddleware,
-];
-
-const deleteserValidator = [
-  check("id")
-    .trim()
-    .notEmpty()
-    .withMessage("User ID is required.")
-    .isMongoId()
-    .withMessage("This is not a valid ID.")
-    .custom(async (val, { req }) => {
-      const user = await UserModel.findById(val);
-      if (!user) {
-        throw new Error("User not found.");
-      }
-      return true;
-    }),
-  validatorMiddleware,
-];
-
 module.exports = {
-  createUserValidator,
+  createUserValidator: userValidator(false),
+  updateUserValidator: userValidator(true),
   changePasswordValidator,
-  updateUserValidator,
   deleteserValidator,
   getUserValidator,
+  changeMyPasswordValidator,
+  updataLoggedUserDataValidator,
 };

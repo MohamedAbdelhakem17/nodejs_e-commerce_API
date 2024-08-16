@@ -7,8 +7,13 @@ const getCategoryValidator = [
   validatorMiddleware,
 ];
 
-const createCategoryValidator = [
+const CategoryValidator = (isUpdate) => [
+  check("id")
+    .if(() => isUpdate)
+    .isMongoId()
+    .withMessage("This Is Not Valid Mongo Id"),
   check("name")
+    .optional(isUpdate)
     .trim()
     .notEmpty()
     .withMessage("You Must Insert Category Name")
@@ -21,18 +26,6 @@ const createCategoryValidator = [
   validatorMiddleware,
 ];
 
-const updateCategoryValidator = [
-  check("id").isMongoId().withMessage("This Is Not Valid Mongo Id"),
-  check("name")
-    .optional()
-    .custom((val, { req }) => {
-      req.body.slug = slugify(val);
-      return true;
-    }),
-
-  validatorMiddleware,
-];
-
 const deletCategoryValidator = [
   check("id").isMongoId().withMessage("This Is Not Valid Mongo Id"),
   validatorMiddleware,
@@ -40,7 +33,7 @@ const deletCategoryValidator = [
 
 module.exports = {
   getCategoryValidator,
-  createCategoryValidator,
-  updateCategoryValidator,
+  createCategoryValidator: CategoryValidator(false),
+  updateCategoryValidator: CategoryValidator(true),
   deletCategoryValidator,
 };

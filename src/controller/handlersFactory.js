@@ -19,7 +19,7 @@ const getAll = (Model) =>
       .search(Model.modelName);
     const { mongooseQuery, paginationResult } = apiFeatures;
     const documents = await mongooseQuery;
-    console.log(Model.modelName);
+    
     res
       .status(200)
       .json({ status: httpStatus.SUCCESS, paginationResult, data: documents });

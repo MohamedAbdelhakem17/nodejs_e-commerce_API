@@ -7,14 +7,9 @@ const asyncHandler = require("express-async-handler");
 const { tokenSecretKey } = require("../config/variable");
 const httpStatus = require("../config/httpStatus");
 const AppError = require("../utils/customError");
-const UserModel = require("../models/UserModel");
 const sendEmail = require("../utils/sendEmail");
-
-// generate Token
-const generateToken = (payload) =>
-  jwt.sign(payload, tokenSecretKey, {
-    expiresIn: "30d",
-  });
+const generateToken = require("../utils/createToken");
+const UserModel = require("../models/UserModel");
 
 // encoded Reset Code
 const encodedResetCode = (code) =>

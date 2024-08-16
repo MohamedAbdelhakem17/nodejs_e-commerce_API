@@ -1,18 +1,24 @@
-const { check, body } = require("express-validator");
+const { check } = require("express-validator");
 const slugify = require("slugify");
 const CategoryModel = require("../../models/CategoryModel");
-const subategoryModel = require("../../models/SubCategoryModel");
+const subCategoryModel = require("../../models/SubCategoryModel");
 const brandModel = require("../../models/BrandModel");
 const validatorMiddleware = require("../../middleware/validatorMiddleware");
 
-const createProductValidator = [
+const productValidator = (isUpdate) => [
+  check("id")
+    .if(() => isUpdate)
+    .isMongoId()
+    .withMessage("This is not a valid mongo id"),
+
   check("title")
+    .optional(isUpdate)
     .trim()
     .notEmpty()
     .withMessage("Title is required")
     .isLength({ min: 3, max: 100 })
     .withMessage(
-      "title must be at least 3 characters and no more than 100 characters"
+      "Title must be at least 3 characters and no more than 100 characters"
     )
     .custom((val, { req }) => {
       req.body.slug = slugify(val);
@@ -20,6 +26,7 @@ const createProductValidator = [
     }),
 
   check("description")
+    .optional(isUpdate)
     .trim()
     .notEmpty()
     .withMessage("Description is required")
@@ -27,6 +34,7 @@ const createProductValidator = [
     .withMessage("Description must be at least 20 characters"),
 
   check("price")
+    .optional(isUpdate)
     .trim()
     .notEmpty()
     .withMessage("Price is required")
@@ -41,77 +49,78 @@ const createProductValidator = [
     .withMessage("Price after discount must be a number")
     .isFloat({ max: 200000 })
     .withMessage("Price after discount must not exceed 200000")
-    // Check price after discount is less than or equal to price
     .custom((value, { req }) => {
-      if (value <= req.body.price)
+      if (value > req.body.price) {
         throw new Error(
           "Price after discount must be less than or equal to price"
         );
+      }
+      return true;
     }),
 
   check("colors")
     .optional()
     .isArray()
-    .withMessage("availableColors should be array of string"),
+    .withMessage("Available colors should be an array of strings"),
 
   check("imageCover").trim().notEmpty().withMessage("Image cover is required"),
 
   check("images")
     .optional()
     .isArray()
-    .withMessage("images should be array of string"),
+    .withMessage("Images should be an array of strings"),
 
   check("category")
+    .optional(isUpdate)
     .trim()
     .notEmpty()
-    .withMessage("Product must be belong to a category")
+    .withMessage("Product must belong to a category")
     .isMongoId()
-    .withMessage("This Is Not Valid Mongo Id")
-    // Check category exist in the database
+    .withMessage("This is not a valid mongo id")
     .custom(async (id) => {
       const category = await CategoryModel.findById(id);
-      if (!category) throw new Error(`No category for this id: ${id}`);
+      if (!category) throw new Error(`No category found for id: ${id}`);
     }),
 
-  check("subCategorys")
+  check("subCategories")
     .optional()
     .isArray()
-    .isMongoId()
-    // .withMessage("This Is Not Vaylid Mongo Id")
-    // Check subcategory exist in the database
+    .withMessage("Subcategories should be an array of valid Mongo IDs")
     .custom(async (subcategoriesIds) => {
-      const subCategoriesIdsInDB = await subategoryModel.find({
-        _id: { $exists: true, $in: subcategoriesIds },
+      const subCategoriesIdsInDB = await subCategoryModel.find({
+        _id: { $in: subcategoriesIds },
       });
       if (
         subCategoriesIdsInDB.length < 1 ||
         subCategoriesIdsInDB.length !== subcategoriesIds.length
       ) {
-        throw new Error(`Invalid subcategories Ids`);
+        throw new Error(`Invalid subcategory IDs`);
       }
       return true;
     })
-    // Check subcategory belongos to same category
     .custom(async (value, { req }) => {
-      const subCategorys = await subategoryModel.find({
+      const subCategorys = await subCategoryModel.find({
         category: req.body.category,
       });
-      const subcategorysIds = subCategorys.map((subcategory) =>
+      const subcategoryIds = subCategorys.map((subcategory) =>
         subcategory._id.toString()
       );
-      const checker = value.every((v) => subcategorysIds.includes(v));
-      if (!checker) throw new Error(`subcategories not belong to category`);
+      const checker = value.every((v) => subcategoryIds.includes(v));
+      if (!checker)
+        throw new Error(
+          "Subcategories do not belong to the specified category"
+        );
     }),
 
   check("brand")
     .optional()
     .isMongoId()
     .withMessage("This is not a valid mongo id")
-    // Check Brand exist in the database
     .custom(async (value) => {
       const brand = await brandModel.findById(value);
-      if (!brand) throw new Error(`No category for this id: ${value}`);
+      if (!brand) throw new Error(`No brand found for id: ${value}`);
     }),
+
   check("ratingsAverage")
     .optional()
     .isNumeric()
@@ -122,26 +131,17 @@ const createProductValidator = [
       }
       return true;
     }),
+
   check("ratingsQuantity")
     .optional()
     .isNumeric()
-    .withMessage("ratingsQuantity must be a number"),
+    .withMessage("Ratings quantity must be a number"),
+
   validatorMiddleware,
 ];
 
 const getProductValidator = [
   check("id").isMongoId().withMessage("This is not avalid mongo id"),
-  validatorMiddleware,
-];
-
-const updateProductValidator = [
-  check("id").isMongoId().withMessage("This is not avalid mongo id"),
-  body("title")
-    .optional()
-    .custom((val, { req }) => {
-      req.body.slug = slugify(val);
-      return true;
-    }),
   validatorMiddleware,
 ];
 
@@ -151,8 +151,8 @@ const deleteProductValidator = [
 ];
 
 module.exports = {
-  createProductValidator,
+  createProductValidator: productValidator(false),
   getProductValidator,
-  updateProductValidator,
+  updateProductValidator: productValidator(true),
   deleteProductValidator,
 };

@@ -7,6 +7,7 @@ const { uploadSingleImage } = require("../middleware/imageUploadingMiddleware");
 const Factory = require("./handlersFactory");
 const httpStatus = require("../config/httpStatus");
 const AppErorr = require("../utils/customError");
+const generateToken = require("../utils/createToken");
 const UserModel = require("../models/UserModel");
 
 // handel image upload
@@ -99,6 +100,76 @@ const changePassword = asyncHandler(async (req, res) => {
   res.status(200).json({ status: httpStatus.SUCCESS, data: user });
 });
 
+//  @desc   get Looged User Data
+//  @route  get   api/v1/user/getme"
+//  @access private/protect
+const getLoogedUserData = asyncHandler(async (req, res, next) => {
+  req.params.id = req.user._id;
+  next();
+});
+
+//  @desc   Reset Logged User password
+//  @route  put   api/v1/user/updateMyPassword"
+//  @access private/protect
+const updataLoogedUserPassword = asyncHandler(async (req, res) => {
+  const { password } = req.body;
+  const id = req.user._id;
+  const user = await UserModel.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        password: await bcrypt.hash(password, 12),
+        passwordChangedAt: Date.now(),
+      },
+    },
+    { new: true, select: "name email role" }
+  );
+
+  if (!user) {
+    throw new AppErorr(404, httpStatus.FAIL, `No user found for this id ${id}`);
+  }
+
+  const token = generateToken({ userId: user._id });
+  res.status(200).json({ status: httpStatus.SUCCESS, data: user, token });
+});
+
+//  @desc  Update Logged User Data
+//  @route  put   api/v1/user/updateMyData"
+//  @access private/protect
+const updataLoogedUserData = asyncHandler(async (req, res) => {
+  const id = req.user._id;
+  const { name, imageProfail, phone, email, slug } = req.body;
+  const user = await UserModel.findByIdAndUpdate(
+    id,
+    {
+      name,
+      imageProfail,
+      phone,
+      email,
+      slug,
+    },
+    { new: true, select: "name phone , email , imageProfail" }
+  );
+  if (!user)
+    throw new AppErorr(404, httpStatus.FAIL, `No User For This id ${id}`);
+  res.status(201).json({ status: httpStatus.SUCCESS, data: user });
+});
+
+//  @desc   delete  User
+//  @route  delete  api/v1/user/deleteMe
+//  @access private
+const deleteMe = asyncHandler(async (req, res) => {
+  const id = req.user._id;
+  const user = await UserModel.findOneAndUpdate(
+    { _id: id, active: 1 },
+    { $set: { active: 0 } },
+    { new: true }
+  );
+  if (!user)
+    throw new AppErorr(404, httpStatus.FAIL, `No User For This id ${id}`);
+  res.status(200).json({ status: httpStatus.SUCCESS, data: null });
+});
+
 module.exports = {
   getUsers,
   getUser,
@@ -108,4 +179,8 @@ module.exports = {
   userImageUpload,
   imageManipulation,
   changePassword,
+  getLoogedUserData,
+  updataLoogedUserPassword,
+  updataLoogedUserData,
+  deleteMe,
 };

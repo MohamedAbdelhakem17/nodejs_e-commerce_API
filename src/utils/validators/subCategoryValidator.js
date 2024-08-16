@@ -8,8 +8,14 @@ const getSubcategoryValidator = [
   validatorMiddleware,
 ];
 
-const createSubcategoryValidator = [
+const subcategoryValidator = (isUpdate) => [
+  check("id")
+    .if(() => isUpdate)
+    .isMongoId()
+    .withMessage("This Is Not Valid Mongo Id"),
+
   check("name")
+    .optional(isUpdate)
     .trim()
     .notEmpty()
     .withMessage("You Must Insert Category Name")
@@ -19,24 +25,15 @@ const createSubcategoryValidator = [
       req.body.slug = slugify(val);
       return true;
     }),
+
   check("category")
+    .optional(isUpdate)
     .isMongoId()
     .withMessage("This Is Not Valid Mongo Id")
     .custom(async (value) => {
       const category = await CategoryModel.findById(value);
       if (!category) throw new Error("Category does not exist");
-      else return true
-    }),
-  validatorMiddleware,
-];
-
-const updateSubcategoryValidator = [
-  check("id").isMongoId().withMessage("This Is Not Valid Mongo Id"),
-  check("name")
-    .optional()
-    .custom((val, { req }) => {
-      req.body.slug = slugify(val);
-      return true;
+      else return true;
     }),
   validatorMiddleware,
 ];
@@ -48,7 +45,7 @@ const deletSubcategoryValidator = [
 
 module.exports = {
   getSubcategoryValidator,
-  createSubcategoryValidator,
-  updateSubcategoryValidator,
+  createSubcategoryValidator: subcategoryValidator(false),
+  updateSubcategoryValidator: subcategoryValidator(true),
   deletSubcategoryValidator,
 };

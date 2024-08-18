@@ -4,11 +4,13 @@ const userRoles = require("../config/userRoles");
 const AuthController = require("../controller/AuthController");
 const allowTo = require("../middleware/allowTomiddleware.js");
 
-const ProductController = require("../controller/ProductController");
+const ReviewModel = require("./ReviewRoute");
 const ProductValidator = require("../utils/validators/ProductValidator");
+const ProductController = require("../controller/ProductController");
 
 const router = express.Router();
 
+router.use("/:productId/reviews", ReviewModel);
 router
   .route("/")
   .get(ProductController.getProducts)

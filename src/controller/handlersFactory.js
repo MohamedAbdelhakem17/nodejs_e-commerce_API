@@ -19,16 +19,18 @@ const getAll = (Model) =>
       .search(Model.modelName);
     const { mongooseQuery, paginationResult } = apiFeatures;
     const documents = await mongooseQuery;
-    
+
     res
       .status(200)
       .json({ status: httpStatus.SUCCESS, paginationResult, data: documents });
   });
 
-const getOne = (Model) =>
+const getOne = (Model, populate) =>
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const document = await Model.findById(id);
+    let query = Model.findById(id);
+    if (populate) query = query.populate(populate);
+    const document = await query;
     if (!document)
       throw new AppErorr(404, httpStatus.FAIL, `No Document For This id ${id}`);
     res.status(200).json({ status: httpStatus.SUCCESS, data: document });
@@ -36,8 +38,8 @@ const getOne = (Model) =>
 
 const createOne = (Model) =>
   asyncHandler(async (req, res) => {
-    const newProduct = await Model.create(req.body);
-    res.status(201).json({ status: httpStatus.SUCCESS, data: newProduct });
+    const document = await Model.create(req.body);
+    res.status(201).json({ status: httpStatus.SUCCESS, data: document });
   });
 
 const updateOne = (Model) =>
@@ -48,13 +50,15 @@ const updateOne = (Model) =>
     });
     if (!document)
       throw new AppErorr(404, httpStatus.FAIL, `No Document For This id ${id}`);
+    document.save();
     res.status(201).json({ status: httpStatus.SUCCESS, data: document });
   });
 
 const deleteOne = (Model) =>
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const document = await Model.findByIdAndDelete({ _id: id });
+    const document = await Model.findByIdAndDelete(id);
+    console.log(document, ",nkfndfp");
     if (!document)
       throw new AppErorr(404, httpStatus.FAIL, `No Document For This id ${id}`);
     res.status(200).json({ status: httpStatus.SUCCESS, data: null });

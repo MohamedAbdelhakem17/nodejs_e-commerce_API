@@ -6,7 +6,7 @@ const bcrypt = require("bcryptjs");
 const { uploadSingleImage } = require("../middleware/imageUploadingMiddleware");
 const Factory = require("./handlersFactory");
 const httpStatus = require("../config/httpStatus");
-const AppErorr = require("../utils/customError");
+const AppError = require("../utils/customError");
 const generateToken = require("../utils/createToken");
 const UserModel = require("../models/UserModel");
 
@@ -59,7 +59,7 @@ const updateUser = asyncHandler(async (req, res) => {
     { new: true }
   );
   if (!user)
-    throw new AppErorr(404, httpStatus.FAIL, `No User For This id ${id}`);
+    throw new AppError(404, httpStatus.FAIL, `No User For This id ${id}`);
   res.status(201).json({ status: httpStatus.SUCCESS, data: user });
 });
 
@@ -74,7 +74,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     { new: true }
   );
   if (!user)
-    throw new AppErorr(404, httpStatus.FAIL, `No User For This id ${id}`);
+    throw new AppError(404, httpStatus.FAIL, `No User For This id ${id}`);
   res.status(200).json({ status: httpStatus.SUCCESS, data: null });
 });
 
@@ -95,7 +95,7 @@ const changePassword = asyncHandler(async (req, res) => {
     { new: true }
   );
   if (!user) {
-    throw new AppErorr(404, httpStatus.FAIL, `No user found for this id ${id}`);
+    throw new AppError(404, httpStatus.FAIL, `No user found for this id ${id}`);
   }
   res.status(200).json({ status: httpStatus.SUCCESS, data: user });
 });
@@ -126,7 +126,7 @@ const updataLoogedUserPassword = asyncHandler(async (req, res) => {
   );
 
   if (!user) {
-    throw new AppErorr(404, httpStatus.FAIL, `No user found for this id ${id}`);
+    throw new AppError(404, httpStatus.FAIL, `No user found for this id ${id}`);
   }
 
   const token = generateToken({ userId: user._id });
@@ -151,7 +151,7 @@ const updataLoogedUserData = asyncHandler(async (req, res) => {
     { new: true, select: "name phone , email , imageProfail" }
   );
   if (!user)
-    throw new AppErorr(404, httpStatus.FAIL, `No User For This id ${id}`);
+    throw new AppError(404, httpStatus.FAIL, `No User For This id ${id}`);
   res.status(201).json({ status: httpStatus.SUCCESS, data: user });
 });
 
@@ -166,7 +166,7 @@ const deleteMe = asyncHandler(async (req, res) => {
     { new: true }
   );
   if (!user)
-    throw new AppErorr(404, httpStatus.FAIL, `No User For This id ${id}`);
+    throw new AppError(404, httpStatus.FAIL, `No User For This id ${id}`);
   res.status(200).json({ status: httpStatus.SUCCESS, data: null });
 });
 

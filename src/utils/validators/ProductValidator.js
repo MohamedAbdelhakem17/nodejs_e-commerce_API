@@ -63,7 +63,7 @@ const productValidator = (isUpdate) => [
     .isArray()
     .withMessage("Available colors should be an array of strings"),
 
-  check("imageCover").trim().notEmpty().withMessage("Image cover is required"),
+  check("imageCover").optional(isUpdate).trim().notEmpty().withMessage("Image cover is required"),
 
   check("images")
     .optional()

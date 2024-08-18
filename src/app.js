@@ -17,6 +17,7 @@ const BrandRoute = require("./routes/BrandRoute");
 const ProductRoute = require("./routes/ProductRoute");
 const UserRoute = require("./routes/UserRoute");
 const AuthRoute = require("./routes/AuthRoute");
+const ReviewRoute = require("./routes/ReviewRoute");
 
 // Database Connection
 dbConnection();
@@ -41,6 +42,7 @@ app.use("/api/v1/brand", BrandRoute);
 app.use("/api/v1/product", ProductRoute);
 app.use("/api/v1/users", UserRoute);
 app.use("/api/v1/auth", AuthRoute);
+app.use("/api/v1/reviews", ReviewRoute);
 
 // Handel not found Route
 app.use("*", (req) => {
@@ -60,7 +62,7 @@ const server = app.listen(serverPort || 8090, () => {
 
 // Handle rejection outside express
 process.on("unhandledRejection", (error) => {
-  console.log(`unhandledRejection Errors : ${error.name}| ${error.message}`);
+  console.log(`unhandledRejection Errors : ${error.name}| ${error.stack}`);
   server.close(() => {
     console.log("Server Closed");
     process.exit(1);

@@ -10,6 +10,7 @@ const productImagesUpload = uploadMultiImages([
   { name: "imageCover", maxCount: 1 },
   { name: "images", maxCount: 5 },
 ]);
+
 const imageManipulation = async (req, res, next) => {
   // image Cover
   if (req.files.imageCover) {
@@ -50,7 +51,10 @@ const getProducts = Factory.getAll(ProductModel);
 // @desc    get one Product
 // @route   grt api/v1/product/:id
 // @access  public
-const getProduct = Factory.getOne(ProductModel);
+const getProduct = Factory.getOne(ProductModel, {
+  path: "reviews",
+  select: "user createdAt -product rating titel",
+});
 
 // @desc    Create New Product
 // @route   Post api/v1/product

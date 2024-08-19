@@ -58,7 +58,7 @@ const deleteOne = (Model) =>
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const document = await Model.findByIdAndDelete(id);
-    console.log(document, ",nkfndfp");
+
     if (!document)
       throw new AppErorr(404, httpStatus.FAIL, `No Document For This id ${id}`);
     res.status(200).json({ status: httpStatus.SUCCESS, data: null });

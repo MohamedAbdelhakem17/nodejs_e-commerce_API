@@ -18,6 +18,8 @@ const ProductRoute = require("./routes/ProductRoute");
 const UserRoute = require("./routes/UserRoute");
 const AuthRoute = require("./routes/AuthRoute");
 const ReviewRoute = require("./routes/ReviewRoute");
+const Wishlist = require("./routes/WishListRoute");
+const AdressesRoute = require("./routes/AdressesRoute");
 
 // Database Connection
 dbConnection();
@@ -43,6 +45,8 @@ app.use("/api/v1/product", ProductRoute);
 app.use("/api/v1/users", UserRoute);
 app.use("/api/v1/auth", AuthRoute);
 app.use("/api/v1/reviews", ReviewRoute);
+app.use("/api/v1/wishlist", Wishlist);
+app.use("/api/v1/address", AdressesRoute);
 
 // Handel not found Route
 app.use("*", (req) => {

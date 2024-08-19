@@ -12,25 +12,30 @@ const userSchema = new mongoose.Schema(
       required: [true, "You must insert User Name"],
       minlength: [3, "Name must contain at least 3 characters"],
     },
+
     slug: {
       type: String,
       lowercase: true,
     },
+
     email: {
       type: String,
       lowercase: true,
       unique: [true, "This Email is already used"],
       required: [true, "You must insert User Email"],
     },
+
     password: {
       type: String,
       required: [true, "You must insert User Password"],
       minlength: [6, "Password must be at least 6 characters long"],
     },
+
     passwordChangedAt: Date,
     resetPasswordCode: String,
     resetPasswordExpire: Date,
     passwordVerify: Boolean,
+
     active: {
       type: Boolean,
       default: true,
@@ -40,10 +45,34 @@ const userSchema = new mongoose.Schema(
       enum: [userRoles.ADMIN, userRoles.USER],
       default: userRoles.USER,
     },
+
     token: String,
     imageProfail: String,
     phone: String,
+
+    wishlist: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
+
+    addresses: [
+      {
+        id: { type: mongoose.Schema.Types.ObjectId },
+        alias: {
+          type: String,
+          unique: [true, "You already added this address"],
+          trim: true,
+        },
+        details: String,
+        phone: String,
+        city: String,
+        postalCode: String,
+      },
+    ],
   },
+  
   { timestamps: true }
 );
 

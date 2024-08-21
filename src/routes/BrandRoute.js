@@ -8,7 +8,7 @@ const {
 
 const userRoles = require("../config/userRoles");
 const AuthController = require("../controller/AuthController");
-const allowTo = require("../middleware/allowTomiddleware.js");
+const allowTo = require("../middleware/allowTomiddleware");
 
 const BrandController = require("../controller/BrandController");
 

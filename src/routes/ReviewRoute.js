@@ -1,6 +1,6 @@
 const express = require("express");
 
-const allowTo = require("../middleware/allowTomiddleware.js");
+const allowTo = require("../middleware/allowTomiddleware");
 const userRoles = require("../config/userRoles");
 
 const AuthController = require("../controller/AuthController");

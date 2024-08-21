@@ -8,6 +8,7 @@ const Factory = require("./handlersFactory");
 const httpStatus = require("../config/httpStatus");
 const AppError = require("../utils/customError");
 const generateToken = require("../utils/createToken");
+
 const UserModel = require("../models/UserModel");
 
 // handel image upload

@@ -4,6 +4,7 @@ const couponSchema = new mongoose.Schema(
   {
     name: {
       type: String,
+      uppercase: true,
       trim: true,
       required: [true, "Please provide a name for the coupon."],
       unique: [

@@ -33,7 +33,14 @@ const signup = asyncHandler(async (req, res) => {
 // @access  Public
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const user = await UserModel.findOne({ email: email, active: 1 });
+  const user = await UserModel.findOne(
+    { email: email, active: 1 },
+    {
+      wishlist: false,
+      addresses: false,
+      __v: false,
+    }
+  );
 
   if (!user)
     throw new AppError(404, httpStatus.FAIL, "This User Does Not Exist");

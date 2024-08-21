@@ -34,6 +34,9 @@ const productSchema = new mongoose.Schema(
     colors: {
       type: [String],
     },
+    sizes: {
+      type: [String],
+    },
     sold: {
       type: Number,
       default: 0,

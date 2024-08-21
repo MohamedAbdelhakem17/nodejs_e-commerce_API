@@ -18,10 +18,18 @@
         "no-process-exit": "off",
         "no-param-reassign": "off",
         "no-return-await": "off",
-        "import/no-extraneous-dependencies": ["error", {"devDependencies": false, "optionalDependencies": false, "peerDependencies": false}] ,
+        "import/no-extraneous-dependencies": [
+            "error",
+            {
+                "devDependencies": false,
+                "optionalDependencies": false,
+                "peerDependencies": false
+            }
+        ],
         "no-underscore-dangle": "off",
         "class-methods-use-this": "off",
         "no-undef": "warn",
+        "node/no-unsupported-features/es-syntax": "off",
         "prefer-destructuring": [
             "error",
             {

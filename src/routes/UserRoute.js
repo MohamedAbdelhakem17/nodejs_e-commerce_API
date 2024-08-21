@@ -2,7 +2,7 @@ const express = require("express");
 
 const userRoles = require("../config/userRoles");
 const AuthController = require("../controller/AuthController");
-const allowTo = require("../middleware/allowTomiddleware.js");
+const allowTo = require("../middleware/allowTomiddleware");
 
 const userValidator = require("../utils/validators/userValidator");
 const UserController = require("../controller/UserController");

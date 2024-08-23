@@ -56,7 +56,7 @@ const getUserCart = asyncHandler(async (req, res) => {
 //  @route   post / api/v1/cart
 //  @access  protect/user
 const addProductToCart = asyncHandler(async (req, res) => {
-  const { product, color, size, quantity } = req.body;
+  const { product, color, size, quantity = 1 } = req.body;
   const user = req.user._id;
 
   let userCart = await CartModel.findOne({ user });
@@ -70,6 +70,7 @@ const addProductToCart = asyncHandler(async (req, res) => {
           color,
           size,
           price: selectProduct.price,
+          quantity,
         },
       ],
       user,
@@ -80,9 +81,8 @@ const addProductToCart = asyncHandler(async (req, res) => {
         currentValue.product.toString() === product &&
         currentValue.color === color
     );
-
     if (productIndex > -1) {
-      userCart.cartItem[productIndex].quantity += quantity || 1;
+      userCart.cartItem[productIndex].quantity += quantity;
     } else {
       userCart.cartItem.push({
         product,

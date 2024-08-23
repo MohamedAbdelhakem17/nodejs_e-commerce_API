@@ -40,7 +40,15 @@ const addProductToCartValidator = [
   check("quantity")
     .optional()
     .isFloat({ min: 1 })
-    .withMessage("Quantity must be a positive number."),
+    .withMessage("Quantity must be a positive number.")
+    .custom(async (val, { req }) => {
+      const { product } = req;
+      
+      if (Number(product.quantity) < Number(val)) {
+        throw new Error(`quantity ${val} is not available`);
+      }
+      return true;
+    }),
 
   validatorMiddleware,
 ];
